@@ -32,6 +32,14 @@ class RecDescentParser:
         terminal_value = self.input_stack.pop(0)
         self.working_stack.append(terminal_value)
 
+    def back(self):
+        self.position_input -= 1
+        terminal_value = self.working_stack.pop()
+        self.input_stack.insert(0, terminal_value)
+
+    def success(self):
+        self.state = ParserState.final
+
     # todo Carla: (expand, momentary insuccess, another try)
     def expand(self):
         non_terminal_value = self.input_stack.pop(0)
