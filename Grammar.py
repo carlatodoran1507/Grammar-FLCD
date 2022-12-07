@@ -41,6 +41,7 @@ class Grammar:
                 return False
         return True
 
-
+    def get_start_symbol(self):
+        return self.__start_symbol
 
 
