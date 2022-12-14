@@ -66,3 +66,32 @@ class RecDescentParser:
             self.input_stack.insert(0, result)
         else:
             self.input_stack.insert(0, non_terminal_value)
+
+    def parse_descendant_recursive(self, word):
+        self.state = ParserState.normal
+        self.position_input = 1
+        # alpha and beta?
+        while self.state != ParserState.final and self.state != ParserState.error:
+            if self.state == ParserState.normal:
+                head = self.input_stack[0]
+                if self.position_input == len(word) + 1 and len(self.input_stack) == 0:
+                    self.success()
+                elif head in self.grammar.get_non_terminals():
+                    self.expand()
+                elif head == word[self.position_input]:
+                    self.advance()
+                else:
+                    self.momentary_insuccess()
+            else:
+                if self.state == ParserState.back:
+                    head = self.working_stack[0]
+                    if head == word[self.position_input]:
+                        self.back()
+                    else:
+                        self.another_try()
+
+        if self.state == ParserState.error:
+            raise Exception('Error')
+            # or print here?
+        else:
+            print('Sequence accepted')
