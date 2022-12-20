@@ -75,7 +75,6 @@ class RecDescentParser:
         self.position_input = 1
         self.working_stack = []
         self.input_stack = [self.grammar.get_start_symbol()]
-        # alpha and beta?
         while self.state != ParserState.final and self.state != ParserState.error:
             if self.state == ParserState.normal:
                 if self.position_input == len(word) + 1 and len(self.input_stack) == 0:
@@ -98,7 +97,6 @@ class RecDescentParser:
 
         if self.state == ParserState.error:
             raise Exception('Error while parsing')
-            # or print here?
         else:
             print('Sequence accepted')
             result_table = self.parser.parse(self.working_stack)
