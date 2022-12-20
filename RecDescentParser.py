@@ -25,6 +25,7 @@ class RecDescentParser:
         self.working_stack = []
         self.input_stack = [grammar.get_start_symbol()]
         self.input_seq = input_seq
+        self.parser = ParserOutput(grammar)
 
     # todo Liviu: (advance, back, success)
     def advance(self):
@@ -70,6 +71,8 @@ class RecDescentParser:
     def parse_descendant_recursive(self, word):
         self.state = ParserState.normal
         self.position_input = 1
+        self.working_stack = []
+        self.input_stack = [grammar.get_start_symbol()]
         # alpha and beta?
         while self.state != ParserState.final and self.state != ParserState.error:
             if self.state == ParserState.normal:
@@ -91,7 +94,9 @@ class RecDescentParser:
                         self.another_try()
 
         if self.state == ParserState.error:
-            raise Exception('Error')
+            raise Exception('Error while parsing')
             # or print here?
         else:
             print('Sequence accepted')
+            result_table = self.parser.parse(self.working_stack)
+            print(result_table)
