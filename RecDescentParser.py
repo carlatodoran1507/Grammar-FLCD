@@ -29,29 +29,35 @@ class RecDescentParser:
 
     # todo Liviu: (advance, back, success)
     def advance(self):
+        print("advance")
         self.position_input += 1
         terminal_value = self.input_stack.pop(0)
         self.working_stack.append(terminal_value)
 
     def back(self):
+        print("back")
         self.position_input -= 1
         terminal_value = self.working_stack.pop()
         self.input_stack.insert(0, terminal_value)
 
     def success(self):
+        print("success")
         self.state = ParserState.final
 
     # todo Carla: (expand, momentary insuccess, another try)
     def expand(self):
+        print("expand")
         non_terminal_value = self.input_stack.pop(0)
         production = self.grammar.get_production_of_non_terminal(non_terminal_value)[0]
         self.working_stack.append((non_terminal_value, production))
         self.input_stack = production + self.input_stack
 
     def momentary_insuccess(self):
+        print("momentary insuccess")
         self.state = ParserState.back
 
     def another_try(self):
+        print("another try")
         production = self.working_stack.pop()
         non_terminal_value = production[0]
         productions = self.grammar.get_production_of_non_terminal(non_terminal_value)
@@ -60,7 +66,7 @@ class RecDescentParser:
         initial_state = self.grammar.get_start_symbol()
         if self.position_input == 1 and initial_state == non_terminal_value:
             self.state = ParserState.error
-            raise Exception('Error')
+            raise Exception('Error. The working stack is: ', self.working_stack)
         elif result != -1:
             self.state = ParserState.normal
             self.working_stack.append((non_terminal_value, result))
@@ -76,6 +82,10 @@ class RecDescentParser:
         self.working_stack = []
         self.input_stack = [self.grammar.get_start_symbol()]
         while self.state != ParserState.final and self.state != ParserState.error:
+            print("State: ", self.state)
+            print("Working stack: ", self.working_stack)
+            print("Input stack: ", self.input_stack)
+            print("Position input: ", self.position_input)
             if self.state == ParserState.normal:
                 if self.position_input == len(word) + 1 and len(self.input_stack) == 0:
                     self.success()
@@ -94,9 +104,10 @@ class RecDescentParser:
                         self.back()
                     else:
                         self.another_try()
+            print()
 
         if self.state == ParserState.error:
-            raise Exception('Error while parsing')
+            raise Exception('Error while parsing. The working stack is: ', self.working_stack)
         else:
             print('Sequence accepted')
             result_table = self.parser.parse(self.working_stack)
