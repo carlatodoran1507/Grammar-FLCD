@@ -1,6 +1,4 @@
 from Grammar import Grammar
-from UI import UI
-from ParserOutput import ParserOutput
 from RecDescentParser import RecDescentParser
 
 if __name__ == '__main__':
@@ -9,14 +7,8 @@ if __name__ == '__main__':
     rec_descent_parser = RecDescentParser(grammar)
     with open('input/pif.in') as inp:
         pif_data = [line.strip() for line in inp.readlines()]
-    # print(pif_data)
-    # for prod in grammar.get_productions().items():
-    #     print(prod)
 
-    # for prod in grammar.get_terminals():
-    #     print(prod)
-    rec_descent_parser.parse_descendant_recursive(pif_data)
-
+    rec_descent_parser.parse_descendant_recursive(pif_data, 'out2.txt')
 
     # # ui = UI(grammar)
     # # ui.run()
