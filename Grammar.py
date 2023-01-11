@@ -19,9 +19,13 @@ class Grammar:
                     continue
                 lhs, rhs = line.strip().split('->')
                 key = lhs.strip()
-                values = [result.strip().split() for result in rhs.strip().split(' | ')]
+                values = [self._split_tokens_from_operation(result) for result in rhs.strip().split(' | ')]
                 self.__productions[key] = values
-                # print(lhs, values)
+
+    @staticmethod
+    def _split_tokens_from_operation(tokens):
+        # replace epsilon keyword with empty string
+        return [token if token != 'EPSILON' else '' for token in tokens.strip().split()]
 
     def get_non_terminals(self):
         return self.__non_terminals
@@ -41,6 +45,5 @@ class Grammar:
                 return False
         return True
 
-
-
-
+    def get_start_symbol(self):
+        return self.__start_symbol
