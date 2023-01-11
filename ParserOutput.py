@@ -14,7 +14,7 @@ class ParserOutput:
         # Keep a list of (current_parse_element, index_in_table)
         current_elements = [(start_symbol, table_index)]
         for item in work_stack:
-            if item in self.grammar.get_terminals():
+            if item in self.grammar.get_terminals() or (item == ''):
                 if current_elements[0][0] == item:
                     current_elements.pop(0)
                 else:
@@ -37,19 +37,24 @@ class ParserOutput:
                 for index, result in enumerate(product_result):
                     parent = current_elements[search_index][1]
                     right_sibling = table_index if index - 1 >= 0 else 0
-                    table.append((table_index + 1, result, parent, right_sibling))
-                    kids.append((result, table_index + 1))
+                    if result != '':
+                        table.append((table_index + 1, result, parent, right_sibling))
+                        kids.append((result, table_index + 1))
+                    else:
+                        table.append((table_index + 1, 'epsilon', parent, right_sibling))
                     table_index += 1
                 current_elements = current_elements[:search_index] + kids + current_elements[search_index + 1:]
 
         return table
 
-    def print_table(self, table):
+    @staticmethod
+    def print_table(table):
         headers = ['Index', 'Info', 'Parent', 'Right sibling']
         df = pd.DataFrame(table, columns=headers)
         print(df.to_string(index=False))
 
-    def print_table_to_file(self, table, filename):
+    @staticmethod
+    def print_table_to_file(table, filename):
         headers = ['Index', 'Info', 'Parent', 'Right sibling']
         df = pd.DataFrame(table, columns=headers)
         with open(filename, 'w') as output:
